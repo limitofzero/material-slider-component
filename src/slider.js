@@ -49,6 +49,13 @@ export class Slider extends HTMLElement {
         this.ownerDocument.addEventListener('mouseup', this.stopSliding);
 
         this.setWidth();
+        this.initCirclePosition();
+    }
+
+    initCirclePosition() {
+        const percent = this.getOnePercentRange();
+        const position = this.value * percent;
+        this.circle.style.left = `${ position }px`;
     }
 
     startSliding() {
@@ -68,15 +75,27 @@ export class Slider extends HTMLElement {
     moveCircle(event) {
         const position = event.pageX - this.line.offsetLeft;
         if (position >= 0 && position <= this.width) {
-            this.circle.style.left = `${position}px`;
+            this.circle.style.left = `${ position }px`;
             this.calculateValue(position);
+            this.dispatchValueChangedEvent();
         }
     }
 
     calculateValue(position) {
-        const onePercent = this.width / this.range;
+        const onePercent = this.getOnePercentRange();
         const value = position / onePercent;
         this.value = Math.round(value);
+    }
+
+    getOnePercentRange() {
+        return this.width / this.range;
+    }
+
+    dispatchValueChangedEvent() {
+        const event = new CustomEvent('valueChanged', {
+            detail: this.value
+        });
+        this.dispatchEvent(event);
     }
 
     disconnectedCallback() {
