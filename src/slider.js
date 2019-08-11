@@ -45,7 +45,7 @@ export class Slider extends HTMLElement {
         this.circle = this.shadowRoot.querySelector('.circle');
 
         this.circle.addEventListener('mousedown', this.startSliding);
-        this.circle.addEventListener('mousemove', this.slide);
+        this.ownerDocument.addEventListener('mousemove', this.slide);
         this.ownerDocument.addEventListener('mouseup', this.stopSliding);
 
         this.setWidth();
